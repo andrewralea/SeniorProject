@@ -43,7 +43,7 @@ try:
         send_byte(control_array)
 
         # Debugging Utilities
-        print(control_array)                
+        #print(control_array)                
         print(data_bin)
 
 except KeyboardInterrupt:
