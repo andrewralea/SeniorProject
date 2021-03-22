@@ -14,6 +14,6 @@ To install the required SDR software on a Raspberry Pi 4b (or any other model):
 > * _gqrx is a GUI used mainly for demodulation and audio playback, useful for troubleshooting your SDR. Seemingly, the librtlsdr library found at https://github.com/librtlsdr/librtlsdr is all that is needed for this project, but this was not tested. Getting the full GUI and its dependencies (one being librtlsdr) is reccomended_
 
 ## Hardware Requirements
-The software defined radio dongle in use is the RTL-SDR v3: 
+The software defined radio dongle in use is the RTL-SDR v3 (2 are needed): 
 
 > https://www.rtl-sdr.com/rtl-sdr-blog-v-3-dongles-user-guide/
