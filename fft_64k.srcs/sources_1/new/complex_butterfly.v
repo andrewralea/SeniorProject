@@ -32,17 +32,36 @@ module complex_butterfly(
     reg [8:0] temp_add1;
     reg [8:0] temp_add2;
     
+    reg [7:0] temp_sub1;
+    reg [7:0] temp_sub2;
+    
     reg [15:0] temp_mult1;
     reg [15:0] temp_mult2;
 
-
-    bit8_adder a0(clk, reset, a_in[0], b_in[0], 1'b0, temp_add1[7:0], temp_add1[8]);
-    bit8_adder a1(clk, reset, a_in[1], b_in[1], 1'b0, temp_add2[7:0], temp_add2[8]);
     
-    always @ (posedge clk)
+    always@ (*)
     begin
-        a_out[0] <= temp_add1[8:1];
-        a_out[1] <= temp_add2[8:1];
+        if(reset)
+        begin
+            a_out[0] = 0;
+            a_out[1] = 0;
+            b_out[0] = 0;
+            b_out[1] = 0;
+        end
+        else
+        begin
+            temp_add1 = a_in[0] + b_in[0]; //adding real components
+            temp_add2 = a_in[1] + b_in[0]; //adding complex components
+            a_out[0] = temp_add1[8:1]; //right shift output real
+            a_out[1] = temp_add2[8:1]; //right shift output complex
+            
+            temp_sub1 = a_in[0] - b_in[0]; //subtract real components
+            temp_sub2 = a_in[1] - b_in[1]; //subtract complex components
+            temp_mult1 = temp_sub1 * weight[0];
+            temp_mult2 =  temp_sub2 * weight[1];
+            b_out[0] = temp_mult1[14:7]; //right shift 7
+            b_out[1] = temp_mult2[14:7]; //right shift 7
+        end
     end
 
 endmodule
