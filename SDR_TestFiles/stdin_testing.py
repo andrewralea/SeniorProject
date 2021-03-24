@@ -15,11 +15,6 @@ def send_byte(byte_out):
     GPIO.setup(data_pins, GPIO.OUT)
     GPIO.output(data_pins, byte_out)
 
-
-    # Flash the clock pin
-    GPIO.output(clock_pin, 1)
-    GPIO.output(clock_pin, 0)
-
 try:
     # Control array to be updated by the data coming from the SDR, then 
     # passed to the send_byte function to be output to the data_pins
