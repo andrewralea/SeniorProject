@@ -13,7 +13,7 @@ try:
         GPIO.output(data_pins, [1, 1, 1, 1, 1, 1, 1, 1])
         print('LED ON')
         sleep(2)
-        GPIO.output(data_pin, [0, 0, 0, 0, 0, 0,0,0])
+        GPIO.output(data_pins, [0, 0, 0, 0, 0, 0, 0, 0])
         print('LED OFF')
         sleep(2)
 
