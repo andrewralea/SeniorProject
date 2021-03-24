@@ -1,7 +1,8 @@
 import RPi.GPIO as GPIO
 from time import sleep
 
-GPIO.setmode(GPIO.BCM)
+# Using actual pin numbers rather than BCM
+GPIO.setmode(GPIO.BOARD)
 
 # Set data pins to be used for output, connected to
 # PMOD ports on Nexys 4 DDR FPGA
