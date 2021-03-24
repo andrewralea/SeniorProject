@@ -23,11 +23,11 @@
 module complex_butterfly(
     input clk,
     input reset,
-    input [1:0] [7:0] a_in,
-    input [1:0] [7:0] b_in,
-    input [1:0] [7:0] weight,
-    output reg [1:0] [7:0] a_out,
-    output reg [1:0] [7:0] b_out
+    input [7:0] a_in[1:0],
+    input [7:0] b_in [1:0],
+    input [7:0] weight[1:0],
+    output reg [7:0] a_out[1:0],
+    output reg [7:0] b_out[1:0]
     );
     reg [8:0] temp_add1;
     reg [8:0] temp_add2;
