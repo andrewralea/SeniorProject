@@ -1,5 +1,5 @@
 import RPi.GPIO as GPIO
-import time import sleep
+from time import sleep
 
 GPIO.setmode(GPIO.BCM)
 
@@ -9,7 +9,7 @@ GPIO.setup(data_pins, GPIO.OUT)
 
 try:
     # Function to send bit to FPGA
-    for x in range(5):
+    for x in range(1):
         GPIO.output(data_pins, [1, 1, 1, 1, 1, 1, 1, 1])
         print('LED ON')
         sleep(2)
