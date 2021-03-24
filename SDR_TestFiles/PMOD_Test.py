@@ -3,13 +3,17 @@ from time import sleep
 
 GPIO.setmode(GPIO.BCM)
 
-# Set variable names for GPIO pin numbers
+# Set data pins to be used for output, connected to
+# PMOD ports on Nexys 4 DDR FPGA
 data_pins = [27, 28, 3, 5, 7, 29, 31, 26]
 GPIO.setup(data_pins, GPIO.OUT)
 
 try:
-    # Function to send bit to FPGA
-    for x in range(1):
+    # For num runs, switch the output pins from 
+    # high to low every 2 seconds, outputting to screen for
+    # verification
+    num_runs = 5
+    for x in range(num_runs):
         GPIO.output(data_pins, [1, 1, 1, 1, 1, 1, 1, 1])
         print('LED ON')
         sleep(2)
