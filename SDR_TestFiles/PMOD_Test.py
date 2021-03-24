@@ -4,16 +4,17 @@ import time import sleep
 GPIO.setmode(GPIO.BCM)
 
 # Set variable names for GPIO pin numbers
-data_pin = 27
-GPIO.setup(data_pin, GPIO.OUT)
+data_pins = [27, 28, 3, 5, 7, 29, 31, 26]
+GPIO.setup(data_pins, GPIO.OUT)
 
 try:
     # Function to send bit to FPGA
     for x in range(5):
-        GPIO.output(data_pin, 1)
+        GPIO.output(data_pins, [1, 1, 1, 1, 1, 1, 1, 1])
         print('LED ON')
         sleep(2)
-        GPIO.output(data_pin, 0)
+        GPIO.output(data_pin, [0, 0, 0, 0, 0, 0,0,0])
+        print('LED OFF')
         sleep(2)
 
 except KeyboardInterrupt:
