@@ -4,7 +4,7 @@ import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
 
 # Set variable names for GPIO pin numbers
-data_pins = [27, 28, 3, 5, 7, 29, 31, 26]
+data_pins = [1, 2, 3, 4, 5, 6, 7, 8]
 
 GPIO.setup(clock_pin, GPIO.OUT)
 GPIO.setup(chip_select, GPIO.OUT)
