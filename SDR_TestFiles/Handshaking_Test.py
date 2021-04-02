@@ -6,17 +6,25 @@ GPIO.setmode(GPIO.BCM)
 
 # Set variable names for GPIO pin numbers
 data_pins = [3, 4, 17, 27, 22, 10, 9, 2]
+RTS_pin = 11
+RTR_pin = 0
+
 GPIO.setup(data_pins, GPIO.OUT)
+GPIO.setup(RTS_pin, GPIO.OUT)
+GPIO.setup(RTR_pin, GPIO.IN)
 
 # Send a single byte of data out to the FPGA
 def send_byte(byte_out):
     # Send the byte
     GPIO.output(data_pins, byte_out)
-    sleep(2)
+
 try:
     # Control array to be updated by the data coming from the SDR, then 
     # passed to the send_byte function to be output to the data_pins
     control_array = [0, 0 , 0, 0, 0, 0 , 0, 0]
+    PI_RTS = 0
+    FPGA_RTR = 0
+
     for data in sys.stdin.buffer.read(16):
 
         data = data - 128                   # Data is of type int read in as uint8, subtract 128
@@ -27,11 +35,15 @@ try:
         for i in range(len(control_array)):
             control_array[i-1] = int(data_bin[i-1])
 
-        # Function to send control array data to FPGA
-        send_byte(control_array)
+        if (data):
+            PI_RTS = 1
+        
 
-        # Debugging Utilities
-        #print(control_array)                
+        # Function to send control array data to FPGA
+        if (PI_RTS & FPGA_RTR):
+            send_byte(control_array)
+
+        # Debugging Utilities               
         print(data_bin)
 
 except KeyboardInterrupt:

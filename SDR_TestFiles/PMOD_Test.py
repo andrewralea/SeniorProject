@@ -6,8 +6,7 @@ GPIO.setmode(GPIO.BCM)
 
 # Set data pins to be used for output, connected to
 # PMOD ports on Nexys 4 DDR FPGA
-# data_pins = [3, 4, 17, 27, 22, 10, 9, 2]
-data_pins = 2
+data_pins = [3, 17, 27, 22, 10, 9, 4, 11]
 GPIO.setup(data_pins, GPIO.OUT)
 
 try:
@@ -16,10 +15,10 @@ try:
     # verification
     num_runs = 2
     for x in range(num_runs):
-        GPIO.output(data_pins, 0)
+        GPIO.output(data_pins, [0, 0, 0, 0, 0, 0, 0, 0])
         print('LED OFF')
         sleep(2)
-        GPIO.output(data_pins, 1)
+        GPIO.output(data_pins, [1, 1, 1, 1, 1, 1, 1, 1])
         print('LED ON')
         sleep(2)
 
