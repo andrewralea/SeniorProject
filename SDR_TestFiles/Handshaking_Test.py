@@ -9,21 +9,19 @@ data_pins = [3, 4, 17, 27, 22, 10, 9, 2]
 RTS_pin = 11
 RTR_pin = 0
 
+# Set up pins as input or output
 GPIO.setup(data_pins, GPIO.OUT)
 GPIO.setup(RTS_pin, GPIO.OUT)
 GPIO.setup(RTR_pin, GPIO.IN)
 
 # Send a single byte of data out to the FPGA
 def send_byte(byte_out):
-    # Send the byte
     GPIO.output(data_pins, byte_out)
 
 try:
     # Control array to be updated by the data coming from the SDR, then 
     # passed to the send_byte function to be output to the data_pins
     control_array = [0, 0 , 0, 0, 0, 0 , 0, 0]
-    PI_RTS = 0
-    FPGA_RTR = 0
 
     for data in sys.stdin.buffer.read(16):
 
@@ -35,12 +33,14 @@ try:
         for i in range(len(control_array)):
             control_array[i-1] = int(data_bin[i-1])
 
+        # Assert and receive handshaking signals
         if (data):
-            PI_RTS = 1
-        
+            GPIO.output(RTS_pin, 1)
+        else:
+            GPIO.output(RTS_pin, 0)
 
         # Function to send control array data to FPGA
-        if (PI_RTS & FPGA_RTR):
+        if (PI_RTS & GPIO.input(RTR_pin)):
             send_byte(control_array)
 
         # Debugging Utilities               

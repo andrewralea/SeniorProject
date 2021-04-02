@@ -5,18 +5,18 @@ from time import sleep
 GPIO.setmode(GPIO.BCM)
 
 # Set variable names for GPIO pin numbers
-data_pins = [3, 4, 17, 27, 22, 10, 9, 2]
+data_pins = [3, 17, 27, 22, 10, 9, 4, 2]
 GPIO.setup(data_pins, GPIO.OUT)
 
 # Send a single byte of data out to the FPGA
 def send_byte(byte_out):
     # Send the byte
     GPIO.output(data_pins, byte_out)
-    sleep(2)
+
 try:
     # Control array to be updated by the data coming from the SDR, then 
     # passed to the send_byte function to be output to the data_pins
-    control_array = [0, 0 , 0, 0, 0, 0 , 0, 0]
+    control_array = [0, 0, 0, 0, 0, 0, 0, 0]
     for data in sys.stdin.buffer.read(16):
 
         data = data - 128                   # Data is of type int read in as uint8, subtract 128
@@ -29,6 +29,7 @@ try:
 
         # Function to send control array data to FPGA
         send_byte(control_array)
+        sleep(1)
 
         # Debugging Utilities
         #print(control_array)                
