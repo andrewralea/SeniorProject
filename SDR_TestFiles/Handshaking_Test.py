@@ -5,7 +5,7 @@ from time import sleep
 GPIO.setmode(GPIO.BCM)
 
 # Set variable names for GPIO pin numbers
-data_pins = [3, 4, 17, 27, 22, 10, 9, 2]
+data_pins = [3, 17, 27, 22, 9, 10, 4, 2]
 RTS_pin = 11
 RTR_pin = 0
 
