@@ -6,8 +6,9 @@ GPIO.setmode(GPIO.BCM)
 
 # Set variable names for GPIO pin numbers
 data_pins = [3, 17, 27, 22, 9, 10, 4, 2]
-RTS_pin = 11
-RTR_pin = 0
+RTS_pin = 21
+RTR_pin = 20
+PI_RTS = 0      # Local variable
 
 # Set up pins as input or output
 GPIO.setup(data_pins, GPIO.OUT)
@@ -36,15 +37,19 @@ try:
         # Assert and receive handshaking signals
         if (data):
             GPIO.output(RTS_pin, 1)
+            PI_RTS = 1
         else:
             GPIO.output(RTS_pin, 0)
+            PI_RTS = 0
 
-        # Function to send control array data to FPGA
-        if (PI_RTS & GPIO.input(RTR_pin)):
+        # Function to send control array data to FPGA if Pi is 
+        # ready to send and FPGA is ready to recieve
+        if (PI_RTS):
             send_byte(control_array)
 
-        # Debugging Utilities               
-        print(data_bin)
+        # Debugging Utilities              
+        # print(data_bin)
+        print(GPIO.input(RTR_pin))
 
 except KeyboardInterrupt:
     print("User exited with CTRL+C")

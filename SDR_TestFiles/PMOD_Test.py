@@ -13,7 +13,7 @@ try:
     # For num runs, switch the output pins from 
     # high to low every 2 seconds, outputting to screen for
     # verification
-    num_runs = 1
+    num_runs = 2
     for x in range(num_runs):
         GPIO.output(data_pins, [0, 0, 0, 0, 0, 0, 0, 0])
         print('LED OFF')
