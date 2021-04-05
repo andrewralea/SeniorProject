@@ -50,7 +50,7 @@ try:
                     break
             while True:                     # Wait for FPGA to recognize acknowledgement
                 print("Waiting for FPGA to acknowledge")
-                if GPIO.input(RTR_pin) == 0:
+                if not GPIO.input(RTR_pin):
                     print("Pi sees that FPGA Acknowledged")
                     break
             print("Handshake Complete")
