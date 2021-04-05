@@ -43,11 +43,6 @@ try:
                 while True:
                     if GPIO.input(RTR_pin) == 0: # FPGA recognizes the Pi's acknowledgement
                         break
-        
-        # Function to send control array data to FPGA if Pi is 
-        # ready to send and FPGA is ready to recieve
-        if (PI_RTS):
-            send_byte(control_array)
 
         # Debugging Utilities              
         # print(data_bin)
