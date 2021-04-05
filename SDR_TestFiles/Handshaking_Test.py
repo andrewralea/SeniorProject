@@ -23,6 +23,7 @@ try:
     # Control array to be updated by the data coming from the SDR, then 
     # passed to the send_byte function to be output to the data_pins
     control_array = [0, 0 , 0, 0, 0, 0 , 0, 0]
+    counter = 1
 
     for data in sys.stdin.buffer.read(16):
 
@@ -36,18 +37,24 @@ try:
 
         # Assert and receive handshaking signals
         if data:
+            print("Byte: " + str(counter))
+            counter = counter + 1
             send_byte(control_array)    # Send data
             GPIO.output(RTS_pin, 1)     # Pi says "I have sent data"
-            print("Pi send data")
-            if GPIO.input(RTR_pin):     # If FPGA says "I have received"
-                print("FPGA received")
-                GPIO.output(RTS_pin, 0) # Pi says "Acknowledged"
-                print("Pi acknowledged receipt")
-                while True:
-                    print("waiting...")
-                    if GPIO.input(RTR_pin) == 0: # FPGA recognizes the Pi's acknowledgement
-                        print("Handshake Complete")
-                        break
+            print("Pi sent data")
+            while True:
+                print("Waiting for FPGA to receive")
+                if GPIO.input(RTR_pin):     # If FPGA says "I have received"
+                    print("FPGA received")
+                    GPIO.output(RTS_pin, 0) # Pi says "Acknowledged"
+                    break
+            while True:                     # Wait for FPGA to recognize acknowledgement
+                print("Waiting for FPGA to acknowledge")
+                if GPIO.input(RTR_pin) == 0:
+                    print("Pi sees that FPGA Acknowledged")
+                    break
+            print("Handshake Complete")
+    
         # Debugging Utilities              
         # print(data_bin)
         # print(GPIO.input(RTR_pin))
