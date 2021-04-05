@@ -1,6 +1,7 @@
 import sys
 import RPi.GPIO as GPIO
 from time import sleep
+from time import process_time
 
 GPIO.setmode(GPIO.BCM)
 
@@ -25,7 +26,8 @@ try:
     control_array = [0, 0 , 0, 0, 0, 0 , 0, 0]
     counter = 1
 
-    for data in sys.stdin.buffer.read(16):
+    start_time = process_time()
+    for data in sys.stdin.buffer.read(65536):
 
         data = data - 128                   # Data is of type int read in as uint8, subtract 128
         data_bin = bin(data & 0b11111111)   # Convert to 2's complement
@@ -37,23 +39,23 @@ try:
 
         # Assert and receive handshaking signals
         if data:
-            print("Byte: " + str(counter))
+            #print("Byte: " + str(counter))
             counter = counter + 1
             send_byte(control_array)    # Send data
             GPIO.output(RTS_pin, 1)     # Pi says "I have sent data"
-            print("Pi sent data")
+            # print("Pi sent data")
             while True:
-                print("Waiting for FPGA to receive")
+                #print("Waiting for FPGA to receive")
                 if GPIO.input(RTR_pin):     # If FPGA says "I have received"
-                    print("FPGA received")
+                    #print("FPGA received")
                     GPIO.output(RTS_pin, 0) # Pi says "Acknowledged"
                     break
             while True:                     # Wait for FPGA to recognize acknowledgement
-                print("Waiting for FPGA to acknowledge")
+                #print("Waiting for FPGA to acknowledge")
                 if not GPIO.input(RTR_pin):
-                    print("Pi sees that FPGA Acknowledged")
+                    #print("Pi sees that FPGA Acknowledged")
                     break
-            print("Handshake Complete")
+            #print("Handshake Complete")
     
         # Debugging Utilities              
         # print(data_bin)
@@ -63,4 +65,6 @@ except KeyboardInterrupt:
     print("User exited with CTRL+C")
 
 finally:
+    stop_time = process_time()
+    print("Elapsed time in s:", stop_time - start_time)
     GPIO.cleanup()                          # Clear GPIO pins so other programs can use them
