@@ -44,10 +44,10 @@ try:
                 GPIO.output(RTS_pin, 0) # Pi says "Acknowledged"
                 print("Pi acknowledged receipt")
                 while True:
+                    print("waiting...")
                     if GPIO.input(RTR_pin) == 0: # FPGA recognizes the Pi's acknowledgement
-                        print("waiting...")
+                        print("Handshake Complete")
                         break
-        print("Handshake Complete")
         # Debugging Utilities              
         # print(data_bin)
         # print(GPIO.input(RTR_pin))
