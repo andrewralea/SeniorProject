@@ -41,33 +41,31 @@ module top(
     parameter stage6 = 5'b00111;
     parameter stage7 = 5'b01000;
     parameter stage8 = 5'b01001;
-    parameter stage9 = 5'b00010;
-    parameter stage10 = 5'b00011;
-    parameter stage11 = 5'b00100;
-    parameter stage12 = 5'b00101;
-    parameter stage13 = 5'b00110;
-    parameter stage14 = 5'b00111;
-    parameter stage15 = 5'b01000;
-    parameter stage16 = 5'b01001;
+    parameter stage9 = 5'b01010;
+    parameter stage10 = 5'b01011;
+    parameter stage11 = 5'b01100;
+    parameter stage12 = 5'b01101;
+    parameter stage13 = 5'b01110;
+    parameter stage14 = 5'b01111;
+    parameter stage15 = 5'b10000;
     
     reg [4:0] present_state;
-    
-    `define offset1 (32768)
-    `define offset2 (16384)
-    `define offset3 (8192)
-    `define offset4 (4096)
-    `define offset5 (2048)
-    `define offset6 (1024)
-    `define offset7 (512)
-    `define offset8 (256)
-    `define offset9 (128)
-    `define offset10 (64)
-    `define offset11 (32)
-    `define offset12 (16)
-    `define offset13 (8)
-    `define offset14 (4)
-    `define offset15 (2)
-    `define offset16 (1)
+   
+    `define offset1 (16384)
+    `define offset2 (8192)
+    `define offset3 (4096)
+    `define offset4 (2048)
+    `define offset5 (1024)
+    `define offset6 (512)
+    `define offset7 (256)
+    `define offset8 (128)
+    `define offset9 (64)
+    `define offset10 (32)
+    `define offset11 (16)
+    `define offset12 (8)
+    `define offset13 (4)
+    `define offset14 (2)
+    `define offset15 (1)
     
     //handshaking and lighting up LEDs
     always @ (posedge clk)
@@ -88,8 +86,10 @@ module top(
     reg [13:0] a_index; //index of a
     reg [14:0] ab_offset; //offset to get to index of b
     reg [14:0] bfly_index; //which butterfly of the stage are we at?
+    reg [14:0] max_bfly_index; //max num of butterflies per bunch
     reg [14:0] num_bunch; //how many butterflies are we doing this stage?
-    reg [14:0] bunch_index; //which bunch of butterflie are we at?
+    reg [14:0] bunch_index; //which bunch of butterfly are we at?
+    reg [14:0] max_bunch_index;
     
     always @(posedge clk)
     begin
@@ -102,63 +102,151 @@ module top(
             begin
                 a_index <= 0;
                 ab_offset <= `offset1;
-                bfl_index <= 0;
+                bfly_index <= 1;
+                max_bfly_index <= 16384;
+                num_bunch <= `offset1;
+                bunch_index <= 1;
+                max_bunch_index = 1;
             end
             stage2:
             begin
-            
+                a_index <= 0;
+                ab_offset <= `offset2;
+                bfly_index <= 1;
+                max_bfly_index <= 8192;
+                num_bunch <= `offset2;
+                bunch_index <= 1;
+                max_bunch_index = 2;
             end
             stage3:
             begin
-            
+                a_index <= 0;
+                ab_offset <= `offset3;
+                bfly_index <= 1;
+                max_bfly_index <= 4096;
+                num_bunch <= `offset3;
+                bunch_index <= 1;
+                max_bunch_index = 4;
             end
             stage4:
             begin
-            
+                a_index <= 0;
+                ab_offset <= `offset4;
+                bfly_index <= 1;
+                max_bfly_index <= 2048;
+                num_bunch <= `offset4;
+                bunch_index <= 1;
+                max_bunch_index = 8;
             end
             stage5:
             begin
-            
+                a_index <= 0;
+                ab_offset <= `offset5;
+                bfly_index <= 1;
+                max_bfly_index <= 1024;
+                num_bunch <= `offset5;
+                bunch_index <= 1;
+                max_bunch_index = 16;
             end
             stage6:
             begin
-            
+                a_index <= 0;
+                ab_offset <= `offset6;
+                bfly_index <= 1;
+                max_bfly_index <= 512;
+                num_bunch <= `offset6;
+                bunch_index <= 1;
+                max_bunch_index = 32;
             end
             stage7:
             begin
-            
+                a_index <= 0;
+                ab_offset <= `offset7;
+                bfly_index <= 1;
+                max_bfly_index <= 256;
+                num_bunch <= `offset7;
+                bunch_index <= 1;
+                max_bunch_index = 64;
             end
             stage8:
             begin
-            
+                a_index <= 0;
+                ab_offset <= `offset8;
+                bfly_index <= 1;
+                max_bfly_index <= 128;
+                num_bunch <= `offset8;
+                bunch_index <= 1;
+                max_bunch_index = 128;
             end
             stage9:
             begin
-            
+                a_index <= 0;
+                ab_offset <= `offset9;
+                bfly_index <= 1;
+                max_bfly_index <= 64;
+                num_bunch <= `offset9;
+                bunch_index <= 1;
+                max_bunch_index = 256;
             end
             stage10:
             begin
-            
+                a_index <= 0;
+                ab_offset <= `offset10;
+                bfly_index <= 1;
+                max_bfly_index <= 32;
+                num_bunch <= `offset10;
+                bunch_index <= 1;
+                max_bunch_index = 512;
             end
             stage11:
             begin
-            
+                a_index <= 0;
+                ab_offset <= `offset11;
+                bfly_index <= 1;
+                max_bfly_index <= 16;
+                num_bunch <= `offset11;
+                bunch_index <= 1;
+                max_bunch_index = 1024;
             end
             stage12:
             begin
-            
+                a_index <= 0;
+                ab_offset <= `offset12;
+                bfly_index <= 1;
+                max_bfly_index <= 8;
+                num_bunch <= `offset12;
+                bunch_index <= 1;
+                max_bunch_index = 2048;
             end
             stage13:
             begin
-            
+                a_index <= 0;
+                ab_offset <= `offset13;
+                bfly_index <= 1;
+                max_bfly_index <= 4;
+                num_bunch <= `offset13;
+                bunch_index <= 1;
+                max_bunch_index = 4096;
             end
             stage14:
             begin
-            
+                a_index <= 0;
+                ab_offset <= `offset14;
+                bfly_index <= 1;
+                max_bfly_index <= 2;
+                num_bunch <= `offset14;
+                bunch_index <= 1;
+                max_bunch_index = 8192;
             end
             stage15:
             begin
-            
+                a_index <= 0;
+                ab_offset <= `offset15;
+                bfly_index <= 1;
+                max_bfly_index <= 1;
+                num_bunch <= `offset15;
+                bunch_index <= 1;
+                max_bunch_index = 16384;
             end
         endcase
     end
