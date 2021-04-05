@@ -38,12 +38,16 @@ try:
         if data:
             send_byte(control_array)    # Send data
             GPIO.output(RTS_pin, 1)     # Pi says "I have sent data"
+            print("Pi send data")
             if GPIO.input(RTR_pin):     # If FPGA says "I have received"
+                print("FPGA received")
                 GPIO.output(RTS_pin, 0) # Pi says "Acknowledged"
+                print("Pi acknowledged receipt")
                 while True:
                     if GPIO.input(RTR_pin) == 0: # FPGA recognizes the Pi's acknowledgement
+                        print("waiting...")
                         break
-
+        print("Handshake Complete")
         # Debugging Utilities              
         # print(data_bin)
         # print(GPIO.input(RTR_pin))
