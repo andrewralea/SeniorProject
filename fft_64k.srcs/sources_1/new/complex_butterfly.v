@@ -52,8 +52,8 @@ module complex_butterfly(
         begin
             temp_add1 = a_in[0] + b_in[0]; //adding real components
             temp_add2 = a_in[1] + b_in[0]; //adding complex components
-            a_out[0] = temp_add1[8:1]; //right shift output real
-            a_out[1] = temp_add2[8:1]; //right shift output complex
+            a_out[0] = temp_add1[7:0]; //right shift output real
+            a_out[1] = temp_add2[7:0]; //right shift output complex
             
             temp_sub1 = a_in[0] - b_in[0]; //subtract real components
             temp_sub2 = a_in[1] - b_in[1]; //subtract complex components
