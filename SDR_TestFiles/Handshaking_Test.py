@@ -35,13 +35,15 @@ try:
             control_array[i-1] = int(data_bin[i-1])
 
         # Assert and receive handshaking signals
-        if (data):
-            GPIO.output(RTS_pin, 1)
-            PI_RTS = 1
-        else:
-            GPIO.output(RTS_pin, 0)
-            PI_RTS = 0
-
+        if data:
+            send_byte(control_array)    # Send data
+            GPIO.output(RTS_pin, 1)     # Pi says "I have sent data"
+            if GPIO.input(RTR_pin):     # If FPGA says "I have received"
+                GPIO.output(RTS_pin, 1) # Pi says "Acknowledged"
+                while True:
+                    if GPIO.input(RTR_pin) == 0:
+                        break
+        
         # Function to send control array data to FPGA if Pi is 
         # ready to send and FPGA is ready to recieve
         if (PI_RTS):
@@ -49,7 +51,7 @@ try:
 
         # Debugging Utilities              
         # print(data_bin)
-        print(GPIO.input(RTR_pin))
+        # print(GPIO.input(RTR_pin))
 
 except KeyboardInterrupt:
     print("User exited with CTRL+C")
