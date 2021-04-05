@@ -39,7 +39,7 @@ try:
             send_byte(control_array)    # Send data
             GPIO.output(RTS_pin, 1)     # Pi says "I have sent data"
             if GPIO.input(RTR_pin):     # If FPGA says "I have received"
-                GPIO.output(RTS_pin, 1) # Pi says "Acknowledged"
+                GPIO.output(RTS_pin, 0) # Pi says "Acknowledged"
                 while True:
                     if GPIO.input(RTR_pin) == 0: # FPGA recognizes the Pi's acknowledgement
                         break
