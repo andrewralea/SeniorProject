@@ -32,11 +32,15 @@ module complex_butterfly(
     reg [8:0] temp_add1;
     reg [8:0] temp_add2;
     
-    reg [7:0] temp_sub1;
-    reg [7:0] temp_sub2;
+    reg signed [7:0] temp_sub1;
+    reg signed [7:0] temp_sub2;
     
-    reg [15:0] temp_mult1;
-    reg [15:0] temp_mult2;
+    reg signed [15:0] temp_mult1;
+    reg signed [15:0] temp_mult2;
+    reg signed [15:0] temp_mult3;
+    reg signed [15:0] temp_mult4;
+    reg signed [7:0] temp_sub3;
+    reg signed [8:0] temp_add3;
 
     
     always@ (*)
@@ -55,12 +59,17 @@ module complex_butterfly(
             a_out[0] = temp_add1[7:0]; //right shift output real
             a_out[1] = temp_add2[7:0]; //right shift output complex
             
-            temp_sub1 = a_in[0] - b_in[0]; //subtract real components
-            temp_sub2 = a_in[1] - b_in[1]; //subtract complex components
-            temp_mult1 = temp_sub1 * weight[0];
-            temp_mult2 =  temp_sub2 * weight[1];
-            b_out[0] = temp_mult1[14:7]; //right shift 7
-            b_out[1] = temp_mult2[14:7]; //right shift 7
+            temp_sub1 = a_in[0] - b_in[0]; //subtract real components , a
+            temp_sub2 = a_in[1] - b_in[1]; //subtract complex components , b
+            temp_mult1 = temp_sub1 * weight[0]; // ac
+            temp_mult2 =  temp_sub2 * weight[1]; //bd
+            temp_sub3 = temp_mult1[7:0] - temp_mult2[7:0]; //ac-bd
+            
+            temp_mult3 = temp_sub1 * weight[1]; // ad
+            temp_mult4 =  temp_sub2 * weight[0]; //bc
+            temp_add3 = temp_mult3[7:0] + temp_mult4[7:0]; //ad+bc
+            b_out[0] = temp_sub3;
+            b_out[1] = temp_add3[7:0]; //right shift 1
         end
     end
 
