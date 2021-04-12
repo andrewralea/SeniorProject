@@ -27,7 +27,7 @@ try:
     counter = 1
 
     start_time = process_time()
-    for data in sys.stdin.buffer.read(65536):
+    for data in sys.stdin.buffer.read(16):
 
         data = data - 128                   # Data is of type int read in as uint8, subtract 128
         data_bin = bin(data & 0b11111111)   # Convert to 2's complement
@@ -41,6 +41,7 @@ try:
         if data:
             #print("Byte: " + str(counter))
             counter = counter + 1
+            sleep(2)
             send_byte(control_array)    # Send data
             GPIO.output(RTS_pin, 1)     # Pi says "I have sent data"
             # print("Pi sent data")
@@ -58,7 +59,7 @@ try:
             #print("Handshake Complete")
     
         # Debugging Utilities              
-        # print(data_bin)
+        print(data_bin)
         # print(GPIO.input(RTR_pin))
 
 except KeyboardInterrupt:
