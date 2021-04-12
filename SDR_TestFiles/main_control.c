@@ -5,7 +5,7 @@
 #include <time.h>
 
 // Global Variables
-unsigned int data_pins[8] = {3, 17, 27, 22, 9, 10, 4, 2};
+unsigned int data_pins[8] = {3, 17, 27, 22, 9, 10, 4, 2};   // All pins in BCM numbering
 unsigned int RTS_pin = 21;
 unsigned int RTR_pin = 20;
 
