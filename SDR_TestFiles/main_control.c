@@ -33,7 +33,7 @@ void dec_to_bin(int *buf, int dec_value) {
 /* ------------------- */
 
 int main() {
-    const unsigned int num_bytes = 65536;       // num bytes to be read
+    const unsigned int num_bytes = 262144;       // num bytes to be read
     unsigned char data_in_buf[num_bytes];       // to read data in    
     signed char signed_data_buf[num_bytes];     // to hold converted data
 
