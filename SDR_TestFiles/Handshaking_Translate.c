@@ -23,7 +23,7 @@ void send_byte(int byte[8]) {
 // Method to convert signed integer to binary integer array
 void dec_to_bin(int *buf, int dec_value) {
     for (int i = 0; i < 8; ++i) {
-        buf[i] = 1;
+        buf[i] = rand() % 2;
     }
 }
 
