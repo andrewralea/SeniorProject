@@ -27,7 +27,6 @@ void dec_to_bin(int *buf, int dec_value) {
     for (int i = 0; i < num_bits; i++) {
         unsigned int mask = 1u << (num_bits - 1 - i);
         buf[i] = (dec_value & mask) ? 1 : 0;
-        buf[i] = rand() % 2;
     }
 }
 
