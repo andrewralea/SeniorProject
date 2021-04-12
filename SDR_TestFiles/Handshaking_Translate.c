@@ -22,7 +22,11 @@ void send_byte(int byte[8]) {
 
 // Method to convert signed integer to binary integer array
 void dec_to_bin(int *buf, int dec_value) {
-    for (int i = 0; i < 8; ++i) {
+    const size_t num_bits = 8;
+
+    for (int i = 0; i < num_bits; i++) {
+        unsigned int mask = 1u << (num_bits - 1 - i);
+        buf[i] = (dec_value & mask) ? 1 : 0;
         buf[i] = rand() % 2;
     }
 }
@@ -56,11 +60,14 @@ int main() {
         if (data_valid > 0) {                                       // if there is data
             for (i = 0; i < data_valid; ++i) {                      // for every byte read
                 signed_data_buf[i] = data_in_buf[i] - 128; 
-                printf("Byte: %d\n", counter);
+                printf("Byte: %d\n", counter + 1);
                 printf("Decimal value: %d\n", signed_data_buf[i]);  
                 dec_to_bin(byte, signed_data_buf[i]);
-                printf("Binary value: TO BE IMPLEMENTED\n");  
-                printf("-------------\n");
+                printf("Binary value:");
+                for (int j = 0; j < 8; j++) {
+                    printf("%d", byte[j]);
+                }  
+                printf("\n-------------\n");
 
                 /* --------------------------------------------------------- */
                 /*    Assert and Receive Handshaking Signals / Send Data     */
