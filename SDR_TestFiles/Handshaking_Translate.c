@@ -20,6 +20,13 @@ void send_byte(int byte[8]) {
     }
 }
 
+// Method to convert signed integer to binary integer array
+void dec_to_bin(int *buf, int dec_value) {
+    for (int i = 0; i < 8; ++i) {
+        buf[i] = 1;
+    }
+}
+
 int main() {
     const unsigned int num_bytes = 1;           // num bytes to be read
     unsigned char data_in_buf[num_bytes];       // to read data in    
@@ -43,37 +50,41 @@ int main() {
     gpioSetMode(RTR_pin, PI_INPUT);
 
     freopen(NULL, "rb", stdin);                 // open stdin in binary mode
-    int byte[8] = {1, 1, 1, 1, 1, 1, 1, 1};     // dummy byte of data to send
+    int byte[8] = {0};
     do {
         data_valid = read(0, data_in_buf, sizeof(data_in_buf));     // try to read a full buffer from stdin
         if (data_valid > 0) {                                       // if there is data
             for (i = 0; i < data_valid; ++i) {                      // for every byte read
-                signed_data_buf[i] = data_in_buf[i] - 128;          
-                printf("%d\n", signed_data_buf[i]);             
+                signed_data_buf[i] = data_in_buf[i] - 128; 
+                printf("Byte: %d\n", counter);
+                printf("Decimal value: %d\n", signed_data_buf[i]);  
+                dec_to_bin(byte, signed_data_buf[i]);
+                printf("Binary value: TO BE IMPLEMENTED\n");  
+                printf("-------------\n");
+
+                /* --------------------------------------------------------- */
+                /*    Assert and Receive Handshaking Signals / Send Data     */
+                /* --------------------------------------------------------- */
+                send_byte(byte);
+                gpioWrite(RTS_pin, 1);              // Pi says "I have sent data"
+                for(;;) {
+                    if (gpioRead(RTR_pin) == 1) {   // FPGA says "I have received data"
+                        gpioWrite(RTS_pin, 0);      // Pi says "Ackowledged"
+                        break;
+                    }
+                }
+                for(;;) {
+                    if (gpioRead(RTR_pin) == 0) {   // FPGA recognized acknowledgement
+                        break;
+                    }
+                }
+                /* --------------------------------------------------------- */           
             }
         }
         else {
             printf("Error reading full buffer");
         }
         counter = counter + 1;
-
-        /*    Assert and Receive Handshaking Signals / Send Data     */
-        /* --------------------------------------------------------- */
-        send_byte(byte);
-        gpioWrite(RTS_pin, 1);              // Pi says "I have sent data"
-        for(;;) {
-            if (gpioRead(RTR_pin) == 1) {   // FPGA says "I have received data"
-                gpioWrite(RTS_pin, 0);      // Pi says "Ackowledged"
-                break;
-            }
-        }
-        for(;;) {
-            if (gpioRead(RTR_pin) == 0) {   // FPGA recognized acknowledgement
-                break;
-            }
-        }
-        /* --------------------------------------------------------- */
-
     } while (counter < 4);                              // iterate 4 times, loop forever in final implementation
 
 
