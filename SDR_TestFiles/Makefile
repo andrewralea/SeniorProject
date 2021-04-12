@@ -1,6 +1,6 @@
 all:
 	gcc -o Handshaking_Translate Handshaking_Translate.c
-	gcc -o GPIO_Test GPIO_Test.c
+	gcc -o GPIO_Test GPIO_Test.c -lpigpio -lrt -lpthread
 
 clean:
 	rm Handshaking_Translate
