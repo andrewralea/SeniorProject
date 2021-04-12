@@ -2,9 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pigpio.h>
+
 // Global Variables
 unsigned int data_pins[8] = {3, 17, 27, 22, 9, 10, 4, 2};
 
+// Methods
 void send_byte(int byte[8]) {
     for (int j = 0; j < 8; j++) {
         gpioWrite(data_pins[j], byte[j]);
@@ -17,8 +19,7 @@ void send_byte(int byte[8]) {
 }
 
 int main(int argc, char *argv[]) {
-    double start;
-    int byte[8] = {1, 1, 1, 1, 1, 1, 1, 1};
+    int byte[8] = {1, 1, 1, 1, 1, 1, 1, 1};             // dummy byte of data to send
 
     // Confirm GPIO init works, else exit
     if (gpioInitialise() < 0) {
@@ -31,10 +32,7 @@ int main(int argc, char *argv[]) {
         gpioSetMode(data_pins[i], PI_OUTPUT);
     }
 
-    start = time_time();
-    while ((time_time() - start) < 5) {
-        send_byte(byte);
-    }
+    send_byte(byte);
 
     gpioTerminate();
 }

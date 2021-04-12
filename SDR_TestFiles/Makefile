@@ -1,5 +1,5 @@
 all:
-	gcc -o Handshaking_Translate Handshaking_Translate.c
+	gcc -o Handshaking_Translate Handshaking_Translate.c -lpigpio -lrt -lpthread
 	gcc -o GPIO_Test GPIO_Test.c -lpigpio -lrt -lpthread
 
 clean:
