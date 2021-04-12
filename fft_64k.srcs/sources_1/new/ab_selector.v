@@ -108,7 +108,8 @@ module ab_selector(
         end
     end
     
-    blk_mem_gen_1(clk, a_index, d_outa, clk, wea, b_index, d_outb);
+    blk_mem_gen_0 bram (.clka(clk), .wea(wea), .addra(a_index), .dina(d_outa), .clkb(clk)
+    , .addrb(b_index), .doutb(d_outb));
     
     complex_butterfly bfly(clk, reset, a_in, b_in, weights, a_out, b_out);
     
