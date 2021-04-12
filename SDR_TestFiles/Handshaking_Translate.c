@@ -23,7 +23,7 @@ int main() {
     unsigned char data_in_buf[num_bytes];       // to read data in    
     signed char signed_data_buf[num_bytes];     // to hold converted data
 
-    int data_in;
+    int data_valid;
     int counter = 0;
     int i;
 
@@ -40,9 +40,9 @@ int main() {
 
     freopen(NULL, "rb", stdin);                 // open stdin in binary mode
     do {
-        data_in = read(0, data_in_buf, sizeof(data_in_buf));     // try to read a full buffer from stdin
-        if (data_in > 0) {                                       // if there is data
-            for (i = 0; i < data_in; ++i) {
+        data_valid = read(0, data_in_buf, sizeof(data_in_buf));     // try to read a full buffer from stdin
+        if (data_valid > 0) {                                       // if there is data
+            for (i = 0; i < data_valid; ++i) {
                 signed_data_buf[i] = data_in_buf[i] - 128;
                 printf("%d\n", signed_data_buf[i]);
             }
@@ -51,7 +51,7 @@ int main() {
             printf("Error reading full buffer");
         }
         counter = counter + 1;
-    } while (counter < 128);
+    } while (counter < 4);
 
     int byte[8] = {1, 1, 1, 1, 1, 1, 1, 1};             // dummy byte of data to send
     send_byte(byte);
