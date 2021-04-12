@@ -63,7 +63,7 @@ int main() {
         gpioWrite(RTS_pin, 1);              // Pi says "I have sent data"
         for(;;) {
             if (gpioRead(RTR_pin) == 1) {   // FPGA says "I have received data"
-                gpioWrite(RTS_pin, 0)       // Pi says "Ackowledged"
+                gpioWrite(RTS_pin, 0);      // Pi says "Ackowledged"
                 break;
             }
         }
