@@ -27,6 +27,7 @@ module ab_selector(
     input [14:0] ab_offset,
     input [14:0] max_bfly_index, 
     input [14:0] max_bunch_index,
+    input [14:0] num_bunch,
     output reg [14:0] bfly_index,
     output reg [14:0] bunch_index
     );
@@ -35,20 +36,23 @@ module ab_selector(
     reg [7:0] b_in [1:0];
     reg [7:0] weights [1:0];
     
-    reg [14:0] a_index;
-    reg [14:0] b_index;
+    reg [15:0] a_index;
+    reg [15:0] b_index;
     wire [7:0] a_out [1:0];
     wire [7:0] b_out [1:0];
     
     reg wea;
-    reg [15:0] d_outa; //a data
-    reg [15:0] d_outb; //b data
+    reg [15:0] read_addr; //a data
+    reg [15:0] write_addr; //b data
+    reg [15:0] d_outb;
+    reg [15:0] d_ina;
     
-    parameter idle = 4'b0001;
-    parameter read = 4'b0010;
-    parameter write = 4'b0100;
-    parameter increment = 4'b1000;
-    reg [3:0] present_state;
+    parameter idle = 5'b00001;
+    parameter read = 5'b00010;
+    parameter delay = 5'b00100;
+    parameter write = 5'b01000;
+    parameter increment = 5'b10000;
+    reg [4:0] present_state;
     
     always @ (posedge clk)
     begin
@@ -80,25 +84,35 @@ module ab_selector(
                 read:
                 begin
                     wea <= 1'b0;
-                    d_outa <= {a_in[1],a_in[0]};
-                    d_outb <= {b_in[1],b_in[0]};
-                    present_state <= write;
+                    read_addr <= a_index;
+                    a_in[1] <= d_outb[15:8];
+                    a_in[0] <= d_outb[7:0];
+                    read_addr <= b_index;
+                    b_in[1] <= d_outb[15:8];
+                    b_in[0] <= d_outb[7:0];
+                    present_state <= delay;
                 end
+                delay:
+                    present_state <= write;
                 write:
                 begin
-                    wea = 1'b1;
-                    d_outa <= {a_out[1], a_out[0]};
-                    d_outb <= {b_out[1], b_out[0]};
+                    wea <= 1'b1;
+                    write_addr <= a_index;
+                    d_ina <= {a_in[1], a_in[0]};
+                    write_addr <= b_index;
+                    d_ina <= {b_in[1], b_in[0]};
                     present_state <= increment;
                 end
                 increment:
                 begin
-                    if(bfly_index <= max_bfly_index)
+                    if(bfly_index <= num_bunch)
                     begin
+                        a_index <= a_index + 1;
                         bfly_index <= bfly_index + 1;
                     end
                     else //increment bunch index but bfly_idx is at max
                     begin
+                        a_index <= a_index + 1;
                         bunch_index <= bunch_index + 1;
                     end
                     
@@ -108,8 +122,8 @@ module ab_selector(
         end
     end
     
-    blk_mem_gen_0 bram (.clka(clk), .wea(wea), .addra(a_index), .dina(d_outa), .clkb(clk)
-    , .addrb(b_index), .doutb(d_outb));
+    blk_mem_gen_0 bram (.clka(clk), .wea(wea), .addra(write_addr), .dina(d_ina), .clkb(clk)
+    , .addrb(read_addr), .doutb(d_outb));
     
     complex_butterfly bfly(clk, reset, a_in, b_in, weights, a_out, b_out);
     
