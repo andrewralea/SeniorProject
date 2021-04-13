@@ -11,27 +11,6 @@ unsigned int RTS_pin = 21;
 unsigned int RTR_pin = 20;
 /* ------------------- */
 
-// Method to send data to GPIO pins
-/* ------------------- */
-void send_byte(int byte[8]) {
-    for (int j = 0; j < 8; j++) {
-        gpioWrite(data_pins[j], byte[j]);
-    }
-}
-/* ------------------- */
-
-// Method to convert signed integer to binary integer array
-/* ------------------- */
-void dec_to_bin(int *buf, int dec_value) {
-    const size_t num_bits = 8;
-
-    for (int i = 0; i < num_bits; i++) {
-        unsigned int mask = 1u << (num_bits - 1 - i);
-        buf[i] = (dec_value & mask) ? 1 : 0;            
-    }
-}
-/* ------------------- */
-
 int main() {
     const unsigned int num_bytes = 65536;       // num bytes to be read
     unsigned char data_in_buf[num_bytes];       // to read data in    
@@ -39,8 +18,8 @@ int main() {
 
     int data_valid;
     int counter = 0;            // For debugging use
-    int i;
-    int byte[8] = {0};          // To be updated and used to update GPIO
+    int i, j;
+    int value;
 
     // Confirm GPIO init works, else exit
     if (gpioInitialise() < 0) {
@@ -63,13 +42,14 @@ int main() {
 
         if (data_valid > 0) {                                       // if there is data
             for (i = 0; i < data_valid; ++i) {                      // for every byte read
-                signed_data_buf[i] = data_in_buf[i] - 128;  
-                dec_to_bin(byte, signed_data_buf[i]);
+                value = data_in_buf[i] - 128;  
+                for (j = 7; j >= 0; --j) {
+                    gpioWrite(data_pins[j], (value >> j) & 1);
+                }
 
                 /* --------------------------------------------------------- */
-                /*    Assert and Receive Handshaking Signals / Send Data     */
+                /*    Assert and Receive Handshaking Signals    */
                 /* --------------------------------------------------------- */
-                send_byte(byte);
                 gpioWrite(RTS_pin, 1);              // Pi says "I have sent data"
                 for(;;) {
                     if (gpioRead(RTR_pin) == 1) {   // FPGA says "I have received data"
@@ -89,7 +69,7 @@ int main() {
             printf("Error reading full buffer");
         }
         counter = counter + 1;
-    } while (counter < 1);                              // iterate n times, loop forever in final implementation
+    } while (counter < 16);                              // iterate n times, loop forever in final implementation
 
     diff = clock() - start;
     int msec = diff * 1000 / CLOCKS_PER_SEC;
