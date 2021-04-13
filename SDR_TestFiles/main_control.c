@@ -33,7 +33,7 @@ void dec_to_bin(int *buf, int dec_value) {
 /* ------------------- */
 
 int main() {
-    const unsigned int num_bytes = 262144;       // num bytes to be read
+    const unsigned int num_bytes = 65536;       // num bytes to be read
     unsigned char data_in_buf[num_bytes];       // to read data in    
     signed char signed_data_buf[num_bytes];     // to hold converted data
 
@@ -60,6 +60,7 @@ int main() {
     clock_t start = clock(), diff;              // For timing 
     do {
         data_valid = read(0, data_in_buf, sizeof(data_in_buf));     // try to read a full buffer from stdin
+
         if (data_valid > 0) {                                       // if there is data
             for (i = 0; i < data_valid; ++i) {                      // for every byte read
                 signed_data_buf[i] = data_in_buf[i] - 128;  
@@ -88,7 +89,7 @@ int main() {
             printf("Error reading full buffer");
         }
         counter = counter + 1;
-    } while (counter < 1);                              // iterate n times, loop forever in final implementation
+    } while (data_valid);                              // iterate n times, loop forever in final implementation
 
     diff = clock() - start;
     int msec = diff * 1000 / CLOCKS_PER_SEC;
