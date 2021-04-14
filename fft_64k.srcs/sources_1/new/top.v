@@ -23,7 +23,7 @@
 module top(
     input clk,
     input  reset,
-    input  wire [7:0] out,
+    inout  wire [7:0] out,
     input  in_rts,
     output reg [7:0] out_parallel_pcm,
     output reg out_rtr
@@ -81,6 +81,8 @@ module top(
             out_rtr <= 1'b0;
         end
     end
+    
+    
     
     //state machine for computing fft
     reg [13:0] a_index; //index of a
@@ -250,5 +252,15 @@ module top(
             end
         endcase
     end
+    
+    wire full;
+    wire [7:0] data_out;
+    
+    assign data_out = (full==1) ? 8'bZ : out;
+    
+    //checking time
+    checking checker(clk, out, full, data_out);
+    
+    //ab_selector select(clk, reset, a_index, ab_offset, max_bfly_index, max_bunch_index, bfly_index, bunch_index);
     
 endmodule
