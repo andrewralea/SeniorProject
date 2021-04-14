@@ -20,7 +20,7 @@ int main() {
     int counter = 0;            // For debugging use
     int i, j;
     int value;
-
+ 
     // Confirm GPIO init works, else exit
     if (gpioInitialise() < 0) {
         fprintf(stderr, "pigpio init failed\n");

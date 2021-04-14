@@ -14,7 +14,6 @@ unsigned int RTR_pin = 20;
 int main() {
     const unsigned int num_bytes = 65536;       // num bytes to be read
     unsigned char data_in_buf[num_bytes];       // to read data in    
-    signed char signed_data_buf[num_bytes];     // to hold converted data
 
     int data_valid;
     int counter = 0;            // For debugging use
