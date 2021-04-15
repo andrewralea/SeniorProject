@@ -259,7 +259,7 @@ module top(
     assign data_out = (full==1) ? 8'bZ : out;
     
     //checking time
-    checking checker(clk, out, full, data_out);
+    //checking checker(clk, out, full, data_out);
     
     //ab_selector select(clk, reset, a_index, ab_offset, max_bfly_index, max_bunch_index, bfly_index, bunch_index);
     

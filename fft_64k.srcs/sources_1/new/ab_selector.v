@@ -41,22 +41,24 @@ module ab_selector(
     wire [7:0] a_out [1:0];
     wire [7:0] b_out [1:0];
     
-    reg wea;
+    reg [1:0] wea;
     reg [15:0] read_addr; //a data
     reg [15:0] write_addr; //b data
     reg [15:0] d_outb;
     reg [15:0] d_ina;
     
-    parameter idle = 5'b00001;
-    parameter read = 5'b00010;
-    parameter delay = 5'b00100;
-    parameter write = 5'b01000;
-    parameter increment = 5'b10000;
-    reg [4:0] present_state;
+    parameter idle = 7'b0000001;
+    parameter reada = 7'b0000010;
+    parameter readb = 7'b0000100;
+    parameter delay = 7'b0001000;
+    parameter writea = 7'b0010000;
+    parameter writeb = 7'b0100000;
+    parameter increment = 7'b1000000;
+    reg [6:0] present_state;
     
     always @ (posedge clk)
     begin
-        b_index <= (ab_offset * bunch_index) + a_index;
+        b_index <= ab_offset + a_index; //since aboffset is factor of 2, right shift
     end
     
     always @ (posedge clk)
@@ -79,26 +81,43 @@ module ab_selector(
                     if(bunch_index > max_bunch_index)
                         present_state <= idle;
                     else
-                        present_state <= read;
+                        present_state <= reada;
                 end
-                read:
+                reada:
                 begin
-                    wea <= 1'b0;
+                    wea <= 1'b00;
                     read_addr <= a_index;
+                    
+                    present_state <=  readb;
+                end
+                readb:
+                begin
+                    wea <= 2'b00;
+                    read_addr <= b_index;
+                    
                     a_in[1] <= d_outb[15:8];
                     a_in[0] <= d_outb[7:0];
-                    read_addr <= b_index;
-                    b_in[1] <= d_outb[15:8];
-                    b_in[0] <= d_outb[7:0];
+                    
                     present_state <= delay;
                 end
                 delay:
-                    present_state <= write;
-                write:
                 begin
-                    wea <= 1'b1;
+                    present_state <= writea;
+                    
+                    b_in[1] <= d_outb[15:8];
+                    b_in[0] <= d_outb[7:0];
+                    
+                 end
+                writea:
+                begin
+                    wea <= 2'b11;
                     write_addr <= a_index;
                     d_ina <= {a_in[1], a_in[0]};
+                    present_state <= writeb;
+                end
+                writeb:
+                begin
+                    wea <= 2'b11;
                     write_addr <= b_index;
                     d_ina <= {b_in[1], b_in[0]};
                     present_state <= increment;
@@ -122,9 +141,9 @@ module ab_selector(
         end
     end
     
-    blk_mem_gen_0 bram (.clka(clk), .wea(wea), .addra(write_addr), .dina(d_ina), .clkb(clk)
-    , .addrb(read_addr), .doutb(d_outb));
+    //blk_mem_gen_0 bram (.clka(clk), .wea(wea), .addra(write_addr), .dina(d_ina), .clkb(clk)
+    //, .addrb(read_addr), .doutb(d_outb));
     
-    complex_butterfly bfly(clk, reset, a_in, b_in, weights, a_out, b_out);
+    //complex_butterfly bfly(clk, reset, a_in, b_in, {00000001,00000001}, a_out, b_out);
     
 endmodule
