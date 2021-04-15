@@ -23,7 +23,7 @@ int main() {
     // Confirm GPIO init works, else exit
     if (gpioInitialise() < 0) {
         fprintf(stderr, "pigpio init failed\n");
-        return 1;
+        exit(1);
     }
     
     // Set data pins as outputs
@@ -34,6 +34,18 @@ int main() {
     gpioSetMode(RTR_pin, PI_INPUT);
 
     freopen(NULL, "rb", stdin);                 // open stdin in binary mode
+    
+    FILE *f_out = fopen("data_sent.txt", "w");      // Open a file for write that will contain the 65k chunk of data sent
+    if (f_out == NULL) {
+        printf("Error opening file\n");
+        exit(1);
+    }
+
+    FILE *f_in = fopen("data_back.txt", "w");      // Open a file for write that will contain the 65k chunk of data received
+    if (f_in == NULL) {
+        printf("Error opening file\n");
+        exit(1);
+    }
 
     clock_t start = clock(), diff;              // For timing 
     do {
@@ -41,10 +53,18 @@ int main() {
 
         if (data_valid > 0) {                                       // if there is data
             for (i = 0; i < data_valid; ++i) {                      // for every byte read
-                value = data_in_buf[i] - 128;  
-                for (j = 7; j >= 0; --j) {
-                    gpioWrite(data_pins[j], (value >> j) & 1);
+                value = (data_in_buf[i] - 128) & 0xFF;             // ensure other bits are 0
+                while (value) {
+                    if (value & 1) {
+                        fprintf(f_out, "1");
+                    }
+                    else {
+                        fprintf(f_out, "0");
+                    }
+                    value >>= 1;
                 }
+                fprintf(f_out, "\n");
+                gpioWrite_Bits_0_31_Set(value);                     // sets all the 1 bits
 
                 /* --------------------------------------------------------- */
                 /*    Assert and Receive Handshaking Signals    */
@@ -73,5 +93,24 @@ int main() {
     diff = clock() - start;
     int msec = diff * 1000 / CLOCKS_PER_SEC;
     printf("Time taken: %d s %d ms\n", msec/1000, msec%1000);
+    
+    // Set data pins as inputs
+    for (i = 0; i < 8; i++) {
+        gpioSetMode(data_pins[i], PI_INPUT);
+    }
+    // Create new buffer to store data sent back
+    unsigned char data_back[num_bytes];
+    int byte[8] = {0};  
+    for (i = 0; i < num_bytes; i++) {
+        for (int j = 0; j < 8; j++) {
+            byte[j] = gpioRead(data_pins[j]);
+            fprintf(f_in, "%d", byte[j]);
+        }
+        fprintf(f_in, "\n");
+    }
+
+
+    gpioTerminate();
     fclose(stdin);
+    fclose(f_out);
 }
