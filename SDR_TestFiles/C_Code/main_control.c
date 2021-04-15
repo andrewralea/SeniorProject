@@ -56,6 +56,7 @@ int main() {
                 value = (data_in_buf[i] - 128) & 0xFF;             // ensure other bits are 0
                 gpioWrite_Bits_0_31_Set(value);                     // sets all the 1 bits
             
+                // Prints data to text file, but backwards
                 while (value) {
                     if (value & 1) {
                         fprintf(f_out, "1");
