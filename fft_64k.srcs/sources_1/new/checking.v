@@ -48,8 +48,8 @@ module checking(
     always @ (posedge clk)
     begin
         //putting stuff in
-//        if(full == 0)
-//        begin
+        if(full == 0)
+        begin
             count <= count + 1;
             if(in_rtr)
             begin
@@ -60,7 +60,6 @@ module checking(
                 else
                 begin
                     wea <= 2'b10;
-                    write_addr <= write_addr + 1;
                 end
                 if (write_addr == 65535)
                 begin
@@ -69,11 +68,12 @@ module checking(
             end
             else
                 out_rts <= 1'b0;
-//        end
+                write_addr <= write_addr + 1;
+        end
         
         //spitting stuff back out
-//        else
-//        begin
+        else
+        begin
             if((read_addr < 65535) && (in_rtr == 1'b0))
             begin
                 if(count  == 0)
@@ -86,7 +86,7 @@ module checking(
                     read_addr <= read_addr + 1;
                 end
             end
-//        end
+        end
     end
     
 //    always @ (*)
