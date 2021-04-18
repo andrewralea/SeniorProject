@@ -256,7 +256,7 @@ module top(
     wire full;
     wire [7:0] data_out;
     
-    assign data_out = (full==1) ? 8'bZ : out;
+    assign data_out = (full==1) ? out : 8'bZ;
     
     //checking time
     checking checker(clk, out, in_rts, full, data_out, out_rtr);

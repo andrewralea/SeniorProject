@@ -47,31 +47,33 @@ module checking(
     
     always @ (posedge clk)
     begin
-        if(count < 2)
-            count <= count + 1;
-        else
-            count <= 0;
-            
         //putting stuff in
-        if((full == 0) && in_rtr)
-        begin
-            d_ina <= {data_in, data_in};
-            if(count == 0)
-                wea <= 2'b01;
+//        if(full == 0)
+//        begin
+            count <= count + 1;
+            if(in_rtr)
+            begin
+                out_rts <= 1'b1;
+                d_ina <= {data_in, data_in};
+                if(count == 0)
+                    wea <= 2'b01;
+                else
+                begin
+                    wea <= 2'b10;
+                    write_addr <= write_addr + 1;
+                end
+                if (write_addr == 65535)
+                begin
+                    full <= 1'b1;
+                end
+            end
             else
-            begin
-                wea <= 2'b10;
-                write_addr <= write_addr + 1;
-            end
-            if (write_addr == 65535)
-            begin
-                full <= 1'b1;
-            end
-        end
+                out_rts <= 1'b0;
+//        end
         
         //spitting stuff back out
-        else
-        begin
+//        else
+//        begin
             if((read_addr < 65535) && (in_rtr == 1'b0))
             begin
                 if(count  == 0)
@@ -84,31 +86,31 @@ module checking(
                     read_addr <= read_addr + 1;
                 end
             end
-        end
+//        end
     end
     
-    always @ (*)
-    begin
-        if(!full)
-        begin
-            if(in_rtr)
-            begin
-                out_rts = 1'b1;
-            end
-            if (!in_rtr)
-            begin
-                out_rts = 1'b0;
-            end
-        end
-        else
-        begin
-            out_rts <= 1'b1;
-            if(in_rtr)
-                out_rts = 1'b0;
-            else if (!in_rtr)
-                out_rts = 1'b1;
-        end
-    end
+//    always @ (*)
+//    begin
+//        if(!full)
+//        begin
+//            if(in_rtr)
+//            begin
+//                out_rts = 1'b1;
+//            end
+//            if (!in_rtr)
+//            begin
+//                out_rts = 1'b0;
+//            end
+//        end
+//        else
+//        begin
+//            out_rts <= 1'b1;
+//            if(in_rtr)
+//                out_rts = 1'b0;
+//            else if (!in_rtr)
+//                out_rts = 1'b1;
+//        end
+//    end
     
     
     
