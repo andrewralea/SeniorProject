@@ -39,27 +39,27 @@ try:
 
         # Assert and receive handshaking signals
         if data:
-            #print("Byte: " + str(counter))
+            print("Byte: " + str(counter))
             counter = counter + 1
             send_byte(control_array)    # Send data
             GPIO.output(RTS_pin, 1)     # Pi says "I have sent data"
-            # print("Pi sent data")
+            print("Pi sent data")
             while True:
-                #print("Waiting for FPGA to receive")
+                print("Waiting for FPGA to receive")
                 if GPIO.input(RTR_pin):     # If FPGA says "I have received"
-                    #print("FPGA received")
+                    print("FPGA received")
                     GPIO.output(RTS_pin, 0) # Pi says "Acknowledged"
                     break
             while True:                     # Wait for FPGA to recognize acknowledgement
-                #print("Waiting for FPGA to acknowledge")
+                print("Waiting for FPGA to acknowledge")
                 if not GPIO.input(RTR_pin):
-                    #print("Pi sees that FPGA Acknowledged")
+                    print("Pi sees that FPGA Acknowledged")
                     break
-            #print("Handshake Complete")
+            print("Handshake Complete")
     
         # Debugging Utilities              
         # print(data_bin)
-        # print(GPIO.input(RTR_pin))
+        print(GPIO.input(RTR_pin))
 
 except KeyboardInterrupt:
     print("User exited with CTRL+C")
