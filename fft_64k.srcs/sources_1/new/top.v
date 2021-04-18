@@ -26,7 +26,7 @@ module top(
     inout  wire [7:0] out,
     input  in_rts,
     output reg [7:0] out_parallel_pcm,
-    output reg out_rtr
+    output wire out_rtr
     );
     
     
@@ -68,19 +68,19 @@ module top(
     `define offset15 (1)
     
     //handshaking and lighting up LEDs
-    always @ (posedge clk)
-    begin
-        out_reg <= out;
-        out_parallel_pcm [7:0] <= out_reg;
-        if(in_rts)
-        begin
-            out_rtr <= 1'b1;
-        end
-        else if (!in_rts)
-        begin
-            out_rtr <= 1'b0;
-        end
-    end
+//    always @ (posedge clk)
+//    begin
+//        out_reg <= out;
+//        out_parallel_pcm [7:0] <= out_reg;
+//        if(in_rts)
+//        begin
+//            out_rtr <= 1'b1;
+//        end
+//        else if (!in_rts)
+//        begin
+//            out_rtr <= 1'b0;
+//        end
+//    end
     
     
     
@@ -258,10 +258,8 @@ module top(
     
     assign data_out = (full==1) ? 8'bZ : out;
     
-    reg in_rtr;
-    wire out_rts;
     //checking time
-    checking checker(clk, out, in_rtr, full, data_out, out_rts);
+    checking checker(clk, out, in_rts, full, data_out, out_rtr);
     
     //ab_selector select(clk, reset, a_index, ab_offset, max_bfly_index, max_bunch_index, bfly_index, bunch_index);
     

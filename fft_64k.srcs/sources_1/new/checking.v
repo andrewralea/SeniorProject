@@ -83,20 +83,21 @@ module checking(
         //spitting stuff back out
         else
         begin
-            if(read_addr < 65535)
+            if((read_addr < 65535) && (in_rtr == 1'b0))
             begin
-                out_rts <= 1'b1;
                 if(count  == 0)
                 begin
                     data_out <= d_outb[7:0];
-                    out_rts <= 1'b0;
+                    out_rts <= 1'b1;
                 end
                 else
                 begin
                     data_out <= d_outb[15:8];
                     read_addr <= read_addr + 1;
-                    out_rts <= 1'b0;
+                    out_rts <= 1'b1;
                 end
+                if(in_rtr)
+                    out_rts <= 1'b0;
             end
         end
     end
