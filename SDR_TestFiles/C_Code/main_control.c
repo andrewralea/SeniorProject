@@ -120,7 +120,8 @@ int main() {
     for (i = 0; i < num_bytes; i++) {
         for (;;) {
             if (gpioRead(FPGA_pin)) {             // FPGA says I sent data
-                break; }
+                break; 
+            }
         }
         for (int j = 0; j < 8; j++) {
             byte[j] = gpioRead(data_pins[j]);
