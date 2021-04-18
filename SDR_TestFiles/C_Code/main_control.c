@@ -85,14 +85,19 @@ int main() {
 
             // Assert and receive handshaking signals, PI_pin acts as RTS and FPGA_pin as RTR
             gpioWrite(PI_pin, 1);                   // Pi says "I have sent data"
+            printf("Byte %d:\n", i);
+            printf("Pi Sent\n");
             for(;;) {
                 if (gpioRead(FPGA_pin) == 1) {      // FPGA says "I have received data"
+                    printf("FPGA Received\n");
                     gpioWrite(PI_pin, 0);           // Pi says "Ackowledged"
+                    printf("PI Acknowledge\n");
                     break;
                 }
             }
             for(;;) {
                 if (gpioRead(FPGA_pin) == 0) {      // FPGA recognized acknowledgement
+                    printf("FPGA Acknowledge\n");
                     break;
                 }
             }         
