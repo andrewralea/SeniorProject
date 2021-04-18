@@ -53,7 +53,7 @@ module checking(
             count <= 0;
             
         //putting stuff in
-        if(full == 0)
+        if((full == 0) && in_rtr)
         begin
             d_ina <= {data_in, data_in};
             if(count == 0)
@@ -66,17 +66,6 @@ module checking(
             if (write_addr == 65535)
             begin
                 full <= 1'b1;
-                wea <= 2'b00;
-            end
-            
-            //handshaking
-            if(in_rtr)
-            begin
-                out_rts <= 1'b1;
-            end
-            else if (!in_rtr)
-            begin
-                out_rts <= 1'b0;
             end
         end
         
@@ -88,17 +77,36 @@ module checking(
                 if(count  == 0)
                 begin
                     data_out <= d_outb[7:0];
-                    out_rts <= 1'b1;
                 end
                 else
                 begin
                     data_out <= d_outb[15:8];
                     read_addr <= read_addr + 1;
-                    out_rts <= 1'b1;
                 end
-                if(in_rtr)
-                    out_rts <= 1'b0;
             end
+        end
+    end
+    
+    always @ (*)
+    begin
+        if(!full)
+        begin
+            if(in_rtr)
+            begin
+                out_rts = 1'b1;
+            end
+            if (!in_rtr)
+            begin
+                out_rts = 1'b0;
+            end
+        end
+        else
+        begin
+            out_rts <= 1'b1;
+            if(in_rtr)
+                out_rts = 1'b0;
+            else if (!in_rtr)
+                out_rts = 1'b1;
         end
     end
     
