@@ -91,10 +91,6 @@ int main() {
         }
         counter = counter + 1;
     } while (counter < 1);                              // iterate n times, loop forever in final implementation
-
-    diff = clock() - start;
-    int msec = diff * 1000 / CLOCKS_PER_SEC;
-    printf("Time taken: %d s %d ms\n", msec/1000, msec%1000);
     
     // Set data pins as inputs
     for (i = 0; i < 8; i++) {
@@ -103,14 +99,29 @@ int main() {
     // Create new buffer to store data sent back
     unsigned char data_back[num_bytes];
     int byte[8] = {0};  
+
     for (i = 0; i < num_bytes; i++) {
+        for (;;) {
+            if gpioRead(RTR_pin) {                      // FPGA says I sent data
+                break; }
+        }
         for (int j = 0; j < 8; j++) {
             byte[j] = gpioRead(data_pins[j]);
             fprintf(f_in, "%d", byte[j]);
         }
         fprintf(f_in, "\n");
+        gpioWrite(RTS_pin, 1);                  // Pi says I received
+        for (;;) {
+            if gpioRead(RTR_pin == 0) {         // FPGA acknowledges
+                gpioWrite(RTS_pin, 0);          // Pi acknowledges acknowledgement
+                break;
+            }
+        }
     }
 
+    diff = clock() - start;
+    int msec = diff * 1000 / CLOCKS_PER_SEC;
+    printf("Time taken: %d s %d ms\n", msec/1000, msec%1000);
 
     gpioTerminate();
     fclose(stdin);
