@@ -35,6 +35,9 @@ module checking(
     reg [15:0] d_ina;
     wire [15:0] d_outb;
     reg [15:0] fulldata;
+    wire in_xfc;
+    
+    assign in_xfc = (in_rtr && ~out_rts);
     
     initial
     begin
@@ -51,7 +54,7 @@ module checking(
         if(full == 0)
         begin
             count <= count + 1;
-            if(in_rtr)
+            if(in_xfc)
             begin
                 out_rts <= 1'b1;
                 d_ina <= {data_in, data_in};
