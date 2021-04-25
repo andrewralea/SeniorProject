@@ -25,7 +25,7 @@ module top(
     input  reset,
     inout  wire [7:0] out,
     input  in_rts,
-    output reg [7:0] out_parallel_pcm,
+    output full,
     output wire out_rtr
     );
     
@@ -253,10 +253,9 @@ module top(
         endcase
     end
     
-    wire full;
     wire [7:0] data_out;
     
-    assign data_out = (full==1) ? out : 8'bZ;
+    assign data_out = (full==0) ? 8'bZ : out;
     
     //checking time
     checking checker(clk, out, in_rts, full, data_out, out_rtr);

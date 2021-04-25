@@ -48,13 +48,19 @@ module checking(
        full = 1'b0;
     end
     
+    
+    
     always @ (posedge clk)
     begin
         //putting stuff in
         if(full == 0)
         begin
+            //handshaking
             if(in_rtr)
                 out_rts <= 1'b1;
+            else
+                out_rts <= 1'b0;
+                
             if(in_xfc)
             begin
                 count <= count + 1;
@@ -69,19 +75,22 @@ module checking(
                 begin
                     full <= 1'b1;
                 end
-            end
-            else
-                out_rts <= 1'b0;
-                write_addr <= write_addr + 1;
+                else
+                    write_addr <= write_addr + 1;
+            end            
         end
         
         //spitting stuff back out
-        else
+        if(full == 1)
         begin
-            if((read_addr < 65535) && (in_rtr == 1'b0))
+            wea <= 2'b00;
+            if(read_addr < 65535)
             begin
                 if(count  == 0)
                 begin
+                    out_rts <= 1'b1;
+                    if(in_rtr == 1)
+                        out_rts <= 1'b0;
                     data_out <= d_outb[7:0];
                 end
                 else
@@ -92,6 +101,7 @@ module checking(
             end
         end
     end
+
     
 //    always @ (*)
 //    begin
