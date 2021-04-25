@@ -69,7 +69,9 @@ int main() {
     if (data_valid > 0) {                                       // if there is data
         for (i = 0; i < data_valid; ++i) {                      // for every byte read
             value = (data_in_buf[i] - 128) & 0xFF;              // ensure other bits are 0
-            gpioWrite_Bits_0_31_Set(value);                     // sets all the 1 bits
+            for (j = 7; j >= 0; --j) {
+                gpioWrite(data_pins[j], (value >> j) & 1);
+            }
         
             // Prints data to text file, but backwards
             while (value) {
