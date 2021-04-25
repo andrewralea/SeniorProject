@@ -122,6 +122,7 @@ int main() {
     for (i = 0; i < num_bytes; i++) {
         for (;;) {
             if (gpioRead(FPGA_pin)) {             // FPGA says I sent data
+                printf("FPGA Sent\n");
                 break; 
             }
         }
@@ -131,9 +132,12 @@ int main() {
         }
         fprintf(f_in, "\n");
         gpioWrite(PI_pin, 1);                   // Pi says I received
+        printf("Pi received");
         for (;;) {
             if (gpioRead(FPGA_pin == 0)) {        // FPGA acknowledges
+                printf("FPGA ack");
                 gpioWrite(PI_pin, 0);           // Pi acknowledges acknowledgement
+                printf("Pi ack");
                 break;
             }
         }
