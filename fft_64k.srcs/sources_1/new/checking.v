@@ -53,10 +53,11 @@ module checking(
         //putting stuff in
         if(full == 0)
         begin
-            count <= count + 1;
+            if(in_rtr)
+                out_rts <= 1'b1;
             if(in_xfc)
             begin
-                out_rts <= 1'b1;
+                count <= count + 1;
                 d_ina <= {data_in, data_in};
                 if(count == 0)
                     wea <= 2'b01;
