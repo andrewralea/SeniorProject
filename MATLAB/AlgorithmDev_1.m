@@ -19,11 +19,12 @@ outfile = fopen("PowerData.bin", "w");
 
 FFT_PointSize = 32768;
 L = length(y);
-Y = fftshift(fft(y, FFT_PointSize));    % Compute DFT using FFT 
+Y_noShift = fft(y, FFT_PointSize);
+Y = fftshift(Y_noShift);                % Compute DFT using FFT 
 fs = 25000000;                          % Sample freq
 Py = Y.*conj(Y) / (FFT_PointSize * L);  % Power of each freq component
 
-fwrite(outfile, Py);
+fwrite(outfile, Y_noShift);
 
 fVals = fs * (-FFT_PointSize/2:FFT_PointSize/2 - 1) / FFT_PointSize;  % Frequency points
 
