@@ -26,7 +26,7 @@ Y = fftshift(Y_noShift);                % Compute DFT using FFT
 fs = 25000000;                          % Sample freq
 Py = Y.*conj(Y) / (FFT_PointSize * L);  % Power of each freq component
 
-fwrite(outfile, Y_noShift, 'float');
+fwrite(outfile, normY_noShift, 'float');
 
 fVals = fs * (-FFT_PointSize/2:FFT_PointSize/2 - 1) / FFT_PointSize;  % Frequency points
 
