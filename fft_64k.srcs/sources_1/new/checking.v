@@ -86,6 +86,7 @@ module checking(
             wea <= 2'b00;
             if(read_addr < 65535)
             begin
+                count <= count + 1;
                 if(count  == 0)
                 begin
                     out_rts <= 1'b1;
