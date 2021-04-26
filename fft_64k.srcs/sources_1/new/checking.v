@@ -81,7 +81,7 @@ module checking(
         end
         
         //spitting stuff back out
-        if(full == 1)
+        else
         begin
             wea <= 2'b00;
             if(read_addr < 65535)
@@ -96,6 +96,9 @@ module checking(
                 end
                 else
                 begin
+                    out_rts <= 1'b1;
+                    if(in_rtr == 1)
+                        out_rts <= 1'b0;
                     data_out <= d_outb[15:8];
                     read_addr <= read_addr + 1;
                 end

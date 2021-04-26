@@ -110,14 +110,14 @@ module ab_selector(
                  end
                 writea:
                 begin
-                    wea <= 2'b11;
+                    wea <= 2'b01;
                     write_addr <= a_index;
                     d_ina <= {a_in[1], a_in[0]};
                     present_state <= writeb;
                 end
                 writeb:
                 begin
-                    wea <= 2'b11;
+                    wea <= 2'b10;
                     write_addr <= b_index;
                     d_ina <= {b_in[1], b_in[0]};
                     present_state <= increment;
@@ -141,9 +141,9 @@ module ab_selector(
         end
     end
     
-    //blk_mem_gen_0 bram (.clka(clk), .wea(wea), .addra(write_addr), .dina(d_ina), .clkb(clk)
-    //, .addrb(read_addr), .doutb(d_outb));
+//    blk_mem_gen_0 bram (.clka(clk), .wea(wea), .addra(write_addr), .dina(d_ina), .clkb(clk)
+//    , .addrb(read_addr), .doutb(d_outb));
     
-    //complex_butterfly bfly(clk, reset, a_in, b_in, {00000001,00000001}, a_out, b_out);
+    complex_butterfly bfly(clk, reset, a_in, b_in, {00000001,00000001}, a_out, b_out);
     
 endmodule
