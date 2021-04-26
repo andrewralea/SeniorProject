@@ -13,7 +13,7 @@ y = fread(fid,'uint8=>double');
 y = y-127.5;
 y = y(1:2:end) + 1i*y(2:2:end);
 
-outfile = fopen("PowerData.txt", "w");
+outfile = fopen("PowerData.bin", "w");
 
 %% Plotting
 
@@ -23,7 +23,7 @@ Y = fftshift(fft(y, FFT_PointSize));    % Compute DFT using FFT
 fs = 25000000;                          % Sample freq
 Py = Y.*conj(Y) / (FFT_PointSize * L);  % Power of each freq component
 
-fprintf(outfile, '%d\n', Py);
+fwrite(outfile, Py);
 
 fVals = fs * (-FFT_PointSize/2:FFT_PointSize/2 - 1) / FFT_PointSize;  % Frequency points
 
