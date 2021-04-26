@@ -13,18 +13,20 @@ y = fread(fid,'uint8=>double');
 y = y-127.5;
 y = y(1:2:end) + 1i*y(2:2:end);
 
-outfile = fopen("PowerData.bin", "w");
+outfile = fopen("/Users/andrewralea/Desktop/TCNJ/Senior Project/SeniorProject/AlgorithmDev/PowerData.bin", "w");
 
 %% Plotting
 
 FFT_PointSize = 32768;
 L = length(y);
 Y_noShift = fft(y, FFT_PointSize);
+normY_noShift = Y_noShift - min(Y_noShift(:));
+normY_noShift = normY_noShift ./ max(normY_noShift(:));
 Y = fftshift(Y_noShift);                % Compute DFT using FFT 
 fs = 25000000;                          % Sample freq
 Py = Y.*conj(Y) / (FFT_PointSize * L);  % Power of each freq component
 
-fwrite(outfile, Y_noShift);
+fwrite(outfile, Y_noShift, 'float');
 
 fVals = fs * (-FFT_PointSize/2:FFT_PointSize/2 - 1) / FFT_PointSize;  % Frequency points
 
