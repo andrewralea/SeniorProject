@@ -3,10 +3,9 @@
 #include <stdlib.h>
 
 int main() {
-    char byte;
     const unsigned int num_bytes = 131072;       // num bytes to be read
     unsigned char data_in_buf[num_bytes];       // to read data in    
-    int counter = 0;
+    
 
     /* ---------------------------------------------------------------- */
     /*    Open a file for read that stores the normalized DFT data      */
@@ -19,8 +18,10 @@ int main() {
     /* ---------------------------------------------------------------- */
 
     fread(data_in_buf, sizeof(data_in_buf), 1, f_in);
-    for(int i = 0; i < num_bytes; i++) {
-        printf("%x\n", data_in_buf[i]);
+    for(int i = 0; i < num_bytes; i = i + 2) {
+        printf("Data Point: %d\n", i / 2);
+        printf("I data byte: %x\n", data_in_buf[i]);
+        printf("Q data byte: %x\n", data_in_buf[i + 1]);
     }
 
     fclose(f_in);
