@@ -31,6 +31,8 @@ fwrite(outfile, normY_noShift, 'float');
 fVals = fs * (-FFT_PointSize/2:FFT_PointSize/2 - 1) / FFT_PointSize;  % Frequency points
 
 [pks_out, locs_out] = findpeaks(Py, 'MinPeakDistance', 3e3, 'Threshold', 1e-10);
+
+figure(1);
 subplot(2,1,1)
 plot(fVals(locs_out),pks_out, 'or')
 hold on;
@@ -51,4 +53,3 @@ ylabel('Power');
 %% Closing
 fclose(fid);
 fclose(outfile);
-
