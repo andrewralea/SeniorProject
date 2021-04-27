@@ -93,7 +93,7 @@ int main() {
                 if (gpioRead(FPGA_pin) == 1) {      // FPGA says "I have received data"
                     printf("FPGA Received\n");
                     gpioWrite(PI_pin, 0);           // Pi says "Ackowledged"
-                    printf("PI Acknowledge\n");
+                    printf("Pi Acknowledge\n");
                     break;
                 }
             }

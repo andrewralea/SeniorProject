@@ -17,7 +17,7 @@ try:
     # Control array to be updated by the data coming from the SDR, then 
     # passed to the send_byte function to be output to the data_pins
     control_array = [0, 0, 0, 0, 0, 0, 0, 0]
-    for data in sys.stdin.buffer.read(16):
+    for data in sys.stdin.buffer.read(4):
 
         data = data - 128                   # Data is of type int read in as uint8, subtract 128
         data_bin = bin(data & 0b11111111)   # Convert to 2's complement
