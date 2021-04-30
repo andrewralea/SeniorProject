@@ -35,38 +35,45 @@ xlabel('Frequency (Hz)');
 ylabel('Power');
 
 %% Analysis
-run = 1;
 peak_threshold = 0.03;          % floor for what counts as a peak
-Prev_Locs = zeros(1, 10000);    % oversized array to hold existing peak indices
-counter = 1;
-bin_width = 3000;
-while run == 1
-    temp_max = 0;
+peak_margin = 2000;             % max width of peaks in num bins (out of FFT_PointSize)
+max_num_peaks = 2 * ceil(FFT_PointSize / peak_margin);
+Peak_Locs = zeros(1, max_num_peaks);    % oversized array to hold existing peak indices
+
+for curr_peak_bin = 1:max_num_peaks
+    temp_max = 0;   % set temp max to 0 for each run through of data
+    temp_loc = 0;   % to track bin number
+    
     % Iterate through all data points
     for i = 1:FFT_PointSize 
-        loc_exists = 0;
+        loc_exists = 0; 
         % Check if the value at the current index meets the threshold and
         % is the biggest value yet and update the temp_max variable
         if (Py(i) > temp_max && Py(i) > peak_threshold)  
             % Compare current max index against the existing indices of
             % maxes. If the current is within a certain range of the
             % existing, set a flag
-            for j = 1:counter
-                if (i > (Prev_Locs(j) - bin_width / 2) && i > (Prev_Locs(j) + bin_width / 2))
+            for j = 1:curr_peak_bin
+                if (i > (Peak_Locs(j) - peak_margin / 2) && i < (Peak_Locs(j) + peak_margin / 2))
                     loc_exists = 1;
+                    break;
                 end
             end
             % If the index is not already captured or within range of one
-            % captured, update temp_max, 
+            % captured, update temp_max 
             if (loc_exists == 0)
                 temp_max = Py(i);
+                temp_loc = i;
             end
        end
     end
     if (temp_max == 0)
-       run = 0;
+       break;
     else
-        Prev_Locs(counter) = i;
-        counter = counter + 1;
+        Peak_Locs(curr_peak_bin) = temp_loc;
     end
+end
+
+for i = 1:(curr_peak_bin - 1)
+    fprintf("Peak at i = %d\n", Peak_Locs(i));
 end
