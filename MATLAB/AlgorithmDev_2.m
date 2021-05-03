@@ -29,12 +29,15 @@ Py = Y.*conj(Y) / (FFT_PointSize * L);  % Power of each freq component
 
 fVals = fs * (-FFT_PointSize/2:FFT_PointSize/2 - 1) / FFT_PointSize;  % Frequency points
 
-plot(fVals, Py, 'b');
+subplot(2, 1, 1)
+plot(linspace(1, 32768, 32768), Py, 'b');
 title('Power Spectral Density (Linear)');
-xlabel('Frequency (Hz)');
+xlabel('Sample Bins');
 ylabel('Power');
+subplot(2, 1, 2)
+periodogram(y, [], FFT_PointSize);
 
-%% Analysis
+%% Peak Detection
 peak_threshold = 0.03;          % floor for what counts as a peak
 peak_margin = 2000;             % max width of peaks in num bins (out of FFT_PointSize)
 max_num_peaks = 2 * ceil(FFT_PointSize / peak_margin);
@@ -75,5 +78,7 @@ for curr_peak_bin = 1:max_num_peaks
 end
 
 for i = 1:(curr_peak_bin - 1)
-    fprintf("Peak at i = %d\n", Peak_Locs(i));
+    fprintf("Peak %d\n", i);
+    fprintf("Bin = %d\n", Peak_Locs(i));
+    fprintf("Frequency: %e\n", fVals(Peak_Locs(i)));
 end
