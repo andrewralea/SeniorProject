@@ -14,7 +14,7 @@ y = fread(fid,'uint8=>double');
 y = y-127.5;
 y = y(1:2:end) + 1i*y(2:2:end);
 
-outfile = fopen("/Users/andrewralea/Desktop/TCNJ/Senior Project/SeniorProject/AlgorithmDev/PowerData.bin", "w");
+outfile = fopen("/Users/andrewralea/Desktop/TCNJ/Senior Project/SeniorProject/MATLAB/PowerData.txt", "w");
 
 %% Plotting
 
@@ -37,9 +37,11 @@ ylabel('Power');
 subplot(2, 1, 2)
 periodogram(y, [], FFT_PointSize);
 
+fprintf(outfile, '%0.3f\n', Py);
+
 %% Peak Detection
 peak_threshold = 0.03;          % floor for what counts as a peak
-peak_margin = 2000;             % max width of peaks in num bins (out of FFT_PointSize)
+peak_margin = 1500;             % max width of peaks in num bins (out of FFT_PointSize)
 max_num_peaks = 2 * ceil(FFT_PointSize / peak_margin);
 Peak_Locs = zeros(1, max_num_peaks);    % oversized array to hold existing peak indices
 
