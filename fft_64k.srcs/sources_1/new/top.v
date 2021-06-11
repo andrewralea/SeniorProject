@@ -67,7 +67,7 @@ module top(
     `define offset14 (2)
     `define offset15 (1)
     
-    //handshaking and lighting up LEDs
+//    handshaking and lighting up LEDs
 //    always @ (posedge clk)
 //    begin
 //        out_reg <= out;
@@ -258,7 +258,7 @@ module top(
     assign out = (full==0) ? 8'bZ : data_out;
     
     //checking time
-    checking checker(clk, out, in_rts, full, data_out, out_rtr);
+    checking2 checker(clk, reset, out, in_rts, full, data_out, out_rtr);
     
     //ab_selector select(clk, reset, a_index, ab_offset, max_bfly_index, max_bunch_index, bfly_index, bunch_index);
     

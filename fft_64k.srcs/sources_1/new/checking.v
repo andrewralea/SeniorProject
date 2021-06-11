@@ -41,69 +41,71 @@ module checking(
     
     initial
     begin
-       wea =  2'b00;
-       write_addr = 0;
-       read_addr = 0;
-       count = 0;
-       full = 1'b0;
+        wea = 2'b00;
+        write_addr = 0;
+        read_addr = 0;
+        count = 0;
+        full = 1'b0;
     end
     
-    
-    
+   
+   
     always @ (posedge clk)
     begin
         //putting stuff in
-        if(full == 0)
-        begin
-            //handshaking
-            if(in_rtr)
-                out_rts <= 1'b1;
+            if(full == 0)
+            begin
+                if(in_rtr)
+                    out_rts <= 1'b1;
+                else 
+                    out_rts <= 1'b0;
+                    
+                if(in_xfc)
+                begin
+                    count <= count + 1;
+                    d_ina <= {data_in, data_in};
+                    
+                    //maybe should be combinational
+                    if(count == 0)
+                        wea <= 2'b01;
+                    else
+                    begin
+                        wea <= 2'b10;
+                        
+                        if(write_addr == 32767)
+                            full <= 1'b1;
+                        else
+                            write_addr <= write_addr + 1;
+                    end
+                    
+                end            
+            end
+            
+            //spitting stuff back out
             else
-                out_rts <= 1'b0;
-                
-            if(in_xfc)
             begin
-                count <= count + 1;
-                d_ina <= {data_in, data_in};
-                if(count == 0)
-                    wea <= 2'b01;
-                else
+                wea <= 2'b00;
+                if(read_addr < 32767)
                 begin
-                    wea <= 2'b10;
-                end
-                if (write_addr == 65535)
-                begin
-                    full <= 1'b1;
-                end
-                else
-                    write_addr <= write_addr + 1;
-            end            
-        end
-        
-        //spitting stuff back out
-        else
-        begin
-            wea <= 2'b00;
-            if(read_addr < 65535)
-            begin
-                count <= count + 1;
-                if(count  == 0)
-                begin
-                    out_rts <= 1'b1;
-                    if(in_rtr == 1)
-                        out_rts <= 1'b0;
-                    data_out <= d_outb[7:0];
-                end
-                else
-                begin
-                    out_rts <= 1'b1;
-                    if(in_rtr == 1)
-                        out_rts <= 1'b0;
-                    data_out <= d_outb[15:8];
-                    read_addr <= read_addr + 1;
+                    count <= count + 1;
+                    if(count  == 0)
+                    begin
+                        out_rts <= 1'b1;
+                        if(in_rtr)
+                            out_rts <= 1'b0;
+                            
+                        data_out <= d_outb[7:0];
+                    end
+                    else
+                    begin
+                        out_rts <= 1'b1;
+                        if(in_rtr)
+                            out_rts <= 1'b0;
+                        data_out <= d_outb[15:8];
+                        read_addr <= read_addr + 1;
+                    end
                 end
             end
-        end
     end
 
     
